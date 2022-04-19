@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-const PORT = 8082; // Default port 8080
-const bodyParser = require("body-parser"); // Middleware
+const PORT = 8082; // default port 8080 not working
+const bodyParser = require("body-parser"); // middleware
 
+// returns a random 6 character string
 const characters  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 const generateRandomString = function(length) {
@@ -20,55 +21,36 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// middleware
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Routes
-
-// app.get("/", (req,res) => {
-//   res.send("Hello!");
-// });
-
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
-
-// app.get("/hello", (req, res) => {
-//   res.send("<html><body>Hello <b>World</b></body></html>\n");
-// });
-
+// routes
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
-// app.get("/urls/:shortURL", (req, res) => {
-//   const templateVars = { shortURL: req.params.shortURL, longURL: req.params.longURL };
-//   res.render("urls_show", templateVars);
-// });
-
+// creates TinyURL submission box page
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+// shows the shortened url & it's non-shortened variant
 app.get('/urls/:id', (req, res) => {
   const templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render('urls_show', templateVars);
 });
 
+// creates a new shortened string for url & redirecrts to /urls/
 app.post('/urls', (req, res) => {
   const rngString = generateRandomString(6);
   urlDatabase[rngString] = req.body.longURL;
   res.redirect('/urls/' + rngString);
 });
 
-// app.post('/urls', (req, res) => {
-//   urlDatabase[req.body.name] = req.body.name;
-//   urlDatabase[req.body.longURL] = req.body.longURL;
-//   res.send('Ok');
-// });
-
+// sends message when server is started
 app.listen(PORT, () => {
   console.log(`Tinyapp listening on port ${PORT}!`);
 });
