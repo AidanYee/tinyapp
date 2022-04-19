@@ -1,11 +1,18 @@
 const express = require("express");
 const app = express();
-const PORT = 8081; // Default port 8080
+const PORT = 8082; // Default port 8080
 const bodyParser = require("body-parser"); // Middleware
 
-const generateRandomString = function() {
-  const result = Math.random().toString(36).substring(2,8);
-  console.log(result);
+const characters  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+const generateRandomString = function(length) {
+  let result = ' ';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return result;
 };
 
 const urlDatabase = {
@@ -51,10 +58,17 @@ app.get('/urls/:id', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
-  urlDatabase[req.body.name] = req.body.name;
-  urlDatabase[req.body.longURL] = req.body.longURL;
-  res.send('Ok');
+  const rngString = generateRandomString(6);
+  console.log('rngString', rngString);
+  urlDatabase[rngString] = req.body.longURL;
+  res.redirect('/urls/' + rngString);
 });
+
+// app.post('/urls', (req, res) => {
+//   urlDatabase[req.body.name] = req.body.name;
+//   urlDatabase[req.body.longURL] = req.body.longURL;
+//   res.send('Ok');
+// });
 
 app.listen(PORT, () => {
   console.log(`Tinyapp listening on port ${PORT}!`);
