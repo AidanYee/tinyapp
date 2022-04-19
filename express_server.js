@@ -50,6 +50,12 @@ app.post('/urls', (req, res) => {
   res.redirect('/urls/' + rngString);
 });
 
+// removes a URL resource
+app.post('/urls/:id/delete', (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect('/urls');
+});
+
 // sends message when server is started
 app.listen(PORT, () => {
   console.log(`Tinyapp listening on port ${PORT}!`);
