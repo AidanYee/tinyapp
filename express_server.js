@@ -3,6 +3,10 @@ const app = express();
 const PORT = 8081; // Default port 8080
 const bodyParser = require("body-parser"); // Middleware
 
+function generateRandomString() {
+
+}
+
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
