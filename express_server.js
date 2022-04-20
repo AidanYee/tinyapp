@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 8083; // default port 8080 not working
+const PORT = 8084; // default port 8080 not working
 const bodyParser = require("body-parser"); // middleware
 const cookieParser = require('cookie-parser'); // cookie middleware
 
@@ -37,7 +37,10 @@ app.get("/urls", (req, res) => {
 
 // creates TinyURL submission box page
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = {
+    username: req.cookies["username"],
+  };
+  res.render("urls_new", templateVars);
 });
 
 // shows the shortened url & it's non-shortened variant
