@@ -36,8 +36,18 @@ const users = {
   }
 };
 
+//helper function to check if email is in database
+const emailCheck = function(submittedEmail) {
+  for (const user in users) {
+    if (users[user].email === submittedEmail) {
+      return true;
+    }
+  }
+  return false;
+};
 
-app.set("view engine", "ejs");
+
+app.set('view engine', 'ejs');
 
 // middleware
 app.use(bodyParser.urlencoded({extended: true}));
@@ -52,16 +62,16 @@ app.get("/urls", (req, res) => {
   const user = users[userID];
   //console.log('user', user);
   const templateVars = { urls: urlDatabase, user: user };
-  res.render("urls_index", templateVars);
+  res.render('urls_index', templateVars);
 });
 
 // creates TinyURL submission box page
-app.get("/urls/new", (req, res) => {
+app.get('/urls/new', (req, res) => {
   const userID = req.cookies['user_id'];
   const user = users[userID];
   const templateVars = {
     user: user };
-  res.render("urls_new", templateVars);
+  res.render('urls_new', templateVars);
 });
 
 // shows the shortened url & it's non-shortened variant
@@ -86,18 +96,22 @@ app.get("/register", (req, res) => {
 });
 
 
-
+// registration page
 app.post('/register', (req, res) => {
-  let rngUserID = generateRandomString(4);
-  users[rngUserID] = {
-    id: rngUserID,
-    email: req.body['email'],
-    password: req.body['password']
-  };
-  res.cookie('user_id', rngUserID);
-  //console.log('users', users);
-  res.redirect('/urls');
-
+  if (req.body['email'] === '' || req.body['password'] === '') {
+    res.status(400).send('Can not submit an empty email or password field. Please enter a valid email & password and try again.');
+  } else if (emailCheck(req.body['email'])) {
+    res.status(400).send('Email is already registered. Please register with a different email address.');
+  } else {
+    let rngUserID = generateRandomString(4);
+    users[rngUserID] = {
+      id: rngUserID,
+      email: req.body['email'],
+      password: req.body['password']
+    };
+    res.cookie('user_id', rngUserID);
+    res.redirect('/urls');
+  }
 });
 
 // creates a new shortened string for url & redirects to /urls/
