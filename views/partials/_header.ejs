@@ -12,19 +12,14 @@
     </div>
   <div class="form-group m-auto">
       <% if (!user) { %>
-      <form action="/login" method="post" class="form-inline">
-        <input
-          type="text"
-          name="user"
-          placeholder="email"
-          class="form-control"
-        />
-        <button class="btn btn-outline-dark ml-3">Login</button>
-      </form>
+     <div>
+      <a class="btn btn-outline-dark ml-3" href="/login">Login</a>
+      <a class="btn btn-outline-dark ml-3" href="/register">Register</a>
+     </div>
       <% } else{ %>
       <form action="/logout" method="post" class="form-inline">
         <label for="user">Logged In As: <%= user.email %> </label>
-        <button class="btn btn-outline-dark ml-3">Logout</button>
+        <button type="submit" class="btn btn-outline-dark ml-3">Logout</button>
       </form>
       <% } %>
     </div>

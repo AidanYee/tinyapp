@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 8084; // default port 8080 not working
+const PORT = 8081; // default port 8080 not working
 const bodyParser = require("body-parser"); // middleware
 const cookieParser = require("cookie-parser"); // cookie middleware
 const morgan = require("morgan");
@@ -95,6 +95,14 @@ app.get("/register", (req, res) => {
   res.render("urls_registration", templateVars);
 });
 
+// login page
+app.get("/login", (req, res) => {
+  const templateVars = {
+    user: req.cookies["user_id"],
+  };
+  res.render("urls_login", templateVars);
+});
+
 
 // registration page
 app.post('/register', (req, res) => {
@@ -132,12 +140,6 @@ app.post('/urls/:id/', (req, res) => {
   const shortURL = req.params.id;
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect("/urls/" + shortURL);
-});
-
-// login - when no cookies are saved
-app.post('/login', (req, res) => {
-  res.cookie("user", req.body.user);
-  res.redirect("/urls");
 });
 
 // logout - when cookie is saved
