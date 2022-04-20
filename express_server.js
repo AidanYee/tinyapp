@@ -48,21 +48,27 @@ app.use(morgan('dev'));
 
 // routes
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: req.cookies["user"]};
+  const userID = req.cookies['user_id'];
+  const user = users[userID];
+  //console.log('user', user);
+  const templateVars = { urls: urlDatabase, user: user };
   res.render("urls_index", templateVars);
 });
 
 // creates TinyURL submission box page
 app.get("/urls/new", (req, res) => {
+  const userID = req.cookies['user_id'];
+  const user = users[userID];
   const templateVars = {
-    user: req.cookies["user"],
-  };
+    user: user };
   res.render("urls_new", templateVars);
 });
 
 // shows the shortened url & it's non-shortened variant
 app.get('/urls/:id', (req, res) => {
-  const templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id], user: req.cookies["user"],};
+  const userID = req.cookies['user_id'];
+  const user = users[userID];
+  const templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id], user: user };
   res.render('urls_show', templateVars);
 });
 
@@ -74,7 +80,7 @@ app.get('/u/:shortURL', (req, res) => {
 // registration page
 app.get("/register", (req, res) => {
   const templateVars = {
-    user: req.cookies["user"],
+    user: req.cookies["user_id"],
   };
   res.render("urls_registration", templateVars);
 });
@@ -89,7 +95,7 @@ app.post('/register', (req, res) => {
     password: req.body['password']
   };
   res.cookie('user_id', rngUserID);
-  console.log('users', users);
+  //console.log('users', users);
   res.redirect('/urls');
 
 });

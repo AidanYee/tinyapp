@@ -16,14 +16,14 @@
         <input
           type="text"
           name="user"
-          placeholder="user"
+          placeholder="email"
           class="form-control"
         />
         <button class="btn btn-outline-dark ml-3">Login</button>
       </form>
       <% } else{ %>
       <form action="/logout" method="post" class="form-inline">
-        <label for="user">Logged In As: <%= user %> </label>
+        <label for="user">Logged In As: <%= user.email %> </label>
         <button class="btn btn-outline-dark ml-3">Logout</button>
       </form>
       <% } %>
