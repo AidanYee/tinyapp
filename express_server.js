@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
-const PORT = 8081; // default port 8080 not working
+const PORT = 8083; // default port 8080 not working
 const bodyParser = require("body-parser"); // middleware
+const cookieParser = require('cookie-parser'); // cookie middleware
 
 // returns a random 6 character string
 const characters  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -26,6 +27,8 @@ app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(cookieParser());
+
 // routes
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
@@ -45,7 +48,7 @@ app.get('/urls/:id', (req, res) => {
 
 // creates a new shortened string for url & redirects to /urls/
 app.post('/urls', (req, res) => {
-  const rngString = generateRandomString(6);
+  let rngString = generateRandomString(6);
   urlDatabase[rngString] = req.body.longURL;
   res.redirect('/urls/' + rngString);
 });
@@ -60,7 +63,15 @@ app.post('/urls/:id/delete', (req, res) => {
 app.post('/urls/:id/update', (req, res) => {
   const shortURL = req.params.shortURL;
   urlDatabase[shortURL] = req.body.longURL;
-  res.redirect("/urls/");
+  res.redirect("/urls/" + shortURL);
+});
+
+// login
+app.post('/login', (req, res) => {
+  //const cookie = req.cookie.username;
+  res.cookie("username", req.body.username);
+  //console.log("Cookies:",req.body.cookies);
+  res.redirect("/urls");
 });
 
 // sends message when server is started
