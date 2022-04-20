@@ -22,9 +22,10 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-// middleware
+
 app.set("view engine", "ejs");
 
+// middleware
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(cookieParser());
@@ -54,6 +55,14 @@ app.get('/u/:shortURL', (req, res) => {
   res.redirect(urlDatabase[req.params.shortURL]);
 });
 
+// registration page
+app.get("/register", (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"],
+  };
+  res.render("urls_registration", templateVars);
+});
+
 
 // creates a new shortened string for url & redirects to /urls/
 app.post('/urls', (req, res) => {
@@ -70,7 +79,7 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // editing links
 app.post('/urls/:id/update', (req, res) => {
-  const shortURL = req.params.shortURL;
+  const shortURL = req.params.id;
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect("/urls/" + shortURL);
 });
