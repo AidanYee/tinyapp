@@ -49,12 +49,11 @@ app.get('/urls/:id', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
-// shorturl get
-app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
-  console.log(longURL);
-  res.redirect(longURL);
+// short url that redirects to it's non-shortened variant
+app.get('/u/:shortURL', (req, res) => {
+  res.redirect(urlDatabase[req.params.shortURL]);
 });
+
 
 // creates a new shortened string for url & redirects to /urls/
 app.post('/urls', (req, res) => {
