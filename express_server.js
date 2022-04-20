@@ -57,10 +57,10 @@ app.post('/urls/:id/delete', (req, res) => {
 });
 
 // editing links
-app.post('/urls/:id/', (req, res) => {
-  const editUrl = req.params.id;
-  urlDatabase[editUrl] = req.body.longURL;
-  res.redirect("/urls");
+app.post('/urls/:id/update', (req, res) => {
+  const shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect("/urls/");
 });
 
 // sends message when server is started
