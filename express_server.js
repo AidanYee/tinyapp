@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 8082; // default port 8080 not working
+const PORT = 8081; // default port 8080 not working
 const bodyParser = require("body-parser"); // middleware
 
 // returns a random 6 character string
@@ -43,7 +43,7 @@ app.get('/urls/:id', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
-// creates a new shortened string for url & redirecrts to /urls/
+// creates a new shortened string for url & redirects to /urls/
 app.post('/urls', (req, res) => {
   const rngString = generateRandomString(6);
   urlDatabase[rngString] = req.body.longURL;
@@ -54,6 +54,13 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect('/urls');
+});
+
+// editing links
+app.post('/urls/:id/', (req, res) => {
+  const editUrl = req.params.id;
+  urlDatabase[editUrl] = req.body.longURL;
+  res.redirect("/urls");
 });
 
 // sends message when server is started

@@ -28,11 +28,12 @@
           <tr>
             <td><a href='urls/<%= url %>'><%= url %></a></td> <!--Short Url-->
             <td><a href='<%= urls[url] %>'><%= urls[url] %></td> <!--Long Url-->
-             <td><form type="button" method="POST" action="/urls/<%= url %>"></form><button type="button" class="btn btn-outline-secondary">Edit</button></td>
-            <td><form type="button" method="POST" action="urls/<%= url %>/delete"></form><button type="button" class="btn btn-outline-danger">Delete</button></td>
+            <td><form method="POST" action="/urls/<%= url %>"><button type="submit" class="btn btn-outline-secondary">Edit</button></form></td>
+            <td><form method="POST" action="urls/<%= url %>/delete"><button type="submit" class="btn btn-outline-danger">Delete</button></form></td>
+            
           </tr>
         <% } %>
-      </tbody>
+      </body>
     </table>
   </main>
   <!-- Bootstrap JS -->
