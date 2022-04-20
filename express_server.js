@@ -66,11 +66,15 @@ app.post('/urls/:id/update', (req, res) => {
   res.redirect("/urls/" + shortURL);
 });
 
-// login
+// login - when no cookies are saved
 app.post('/login', (req, res) => {
-  //const cookie = req.cookie.username;
   res.cookie("username", req.body.username);
-  //console.log("Cookies:",req.body.cookies);
+  res.redirect("/urls");
+});
+
+// logout - when cookie is saved
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
   res.redirect("/urls");
 });
 
