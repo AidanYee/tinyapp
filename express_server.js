@@ -81,9 +81,18 @@ app.get("/register", (req, res) => {
 
 
 
-// //app.post('/register', (req, res) => {
-  
-// });
+app.post('/register', (req, res) => {
+  let rngUserID = generateRandomString(4);
+  users[rngUserID] = {
+    id: rngUserID,
+    email: req.body['email'],
+    password: req.body['password']
+  };
+  res.cookie('user_id', rngUserID);
+  console.log('users', users);
+  res.redirect('/urls');
+
+});
 
 // creates a new shortened string for url & redirects to /urls/
 app.post('/urls', (req, res) => {
