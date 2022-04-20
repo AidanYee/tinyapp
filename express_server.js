@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const PORT = 8084; // default port 8080 not working
 const bodyParser = require("body-parser"); // middleware
-const cookieParser = require('cookie-parser'); // cookie middleware
+const cookieParser = require("cookie-parser"); // cookie middleware
+const morgan = require("morgan");
 
 // returns a random 6 character string
 const characters  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -22,6 +23,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "userRandomID" : {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "123"
+  },
+  "user2randomID" : {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "321"
+  }
+};
+
 
 app.set("view engine", "ejs");
 
@@ -29,6 +43,8 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(cookieParser());
+
+app.use(morgan('dev'));
 
 // routes
 app.get("/urls", (req, res) => {
@@ -64,6 +80,11 @@ app.get("/register", (req, res) => {
 });
 
 
+
+// //app.post('/register', (req, res) => {
+  
+// });
+
 // creates a new shortened string for url & redirects to /urls/
 app.post('/urls', (req, res) => {
   let rngString = generateRandomString(6);
@@ -78,7 +99,7 @@ app.post('/urls/:id/delete', (req, res) => {
 });
 
 // editing links
-app.post('/urls/:id/update', (req, res) => {
+app.post('/urls/:id/', (req, res) => {
   const shortURL = req.params.id;
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect("/urls/" + shortURL);
