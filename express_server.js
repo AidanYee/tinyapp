@@ -20,11 +20,6 @@ const generateRandomString = function(length) {
   return result;
 };
 
-// const urlDatabase = {
-//   b2xVn2: "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com",
-// };
-
 //new database
 const urlDatabase = {
   "b2xVn2":{
@@ -42,12 +37,12 @@ const users = {
   userRandomID: {
     id: "userRandomID",
     email: "user@example.com",
-    password: "123",
+    password: bcrypt.hashSync('123'),
   },
-  user2randomID: {
+  user2RandomID: {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "321",
+    password: bcrypt.hashSync('321'),
   },
 };
 
@@ -98,7 +93,8 @@ app.use(morgan("dev"));
 // routes
 app.get("/urls", (req, res) => {
   if (req.cookies['user_id']) {
-    const userURLs = urlsForUser(req.cookies['user_id']);
+    const userURLs = urlsForUser(req.cookies['user_id'], urlDatabase);
+    console.log("userURLs:",userURLs);
     const templateVars = {
       urls: userURLs,
       user: users[req.cookies['user_id']]
@@ -112,14 +108,19 @@ app.get("/urls", (req, res) => {
 
 // creates TinyURL submission box page
 app.get("/urls/new", (req, res) => {
-  if (!req.cookies['user_id']) {
+  if (!req.cookies["user_id"]) {
     res.redirect('/login');
   } else {
     const userID = req.cookies["user_id"];
+    console.log(" userID", userID);
+    const userURLs = urlsForUser(userID, urlDatabase);
     const user = users[userID];
+    console.log("user",user);
     const templateVars = {
-      user: user,
+      user: user['id'],
+      urls: userURLs
     };
+    
     res.render("urls_new", templateVars);
   }
 });
@@ -154,7 +155,10 @@ app.get("/urls/:shortURL", (req, res) => {
   if (urlEntry.userID !== userID) {
     return res.send(403);
   }
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[userID]};
+  const templateVars =
+  { shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL].longURL,
+    user: users[userID]};
   res.render("urls_show", templateVars);
 });
 
@@ -183,11 +187,11 @@ app.post("/login", (req, res) => {
   if (!user) {
     res.status(403).send("User does not exist");
   } else {
-    if (user.password === password) {
+    if (user && bcrypt.compareSync(password, user.password)) {
       res.cookie("user_id", user.id);
       res.redirect("/urls");
     } else {
-      res.status(403).send("Wrong password");
+      res.status(403).send("Wrong password or Username");
     }
   }
 });
@@ -211,8 +215,9 @@ app.post("/register", (req, res) => {
     users[rngUserID] = {
       id: rngUserID,
       email: req.body["email"],
-      password: req.body["password"],
+      password: bcrypt.hashSync(req.body["password"]),
     };
+    // console.log("🚀 ~ file: express_server.js ~ line 207 ~ app.post ~ users", users);
     res.cookie("user_id", rngUserID);
     res.redirect("/urls");
   }
