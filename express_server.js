@@ -6,7 +6,6 @@ const cookieSession = require('cookie-session');// cookie session middleware
 const morgan = require("morgan"); // middleware
 const bcrypt = require('bcryptjs');
 const { urlDatabase, users, generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
-
 app.set("view engine", "ejs");
 
 // middleware
@@ -45,7 +44,6 @@ app.get("/urls/new", (req, res) => {
   } else {
     const userID = req.session["user_id"];
     const userURLs = urlsForUser(userID, urlDatabase);
-    //const user = users[userID];
     const templateVars = {
       user: users[req.session['user_id']],
       urls: userURLs
