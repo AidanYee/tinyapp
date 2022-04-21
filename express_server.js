@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const PORT = 8081; // default port 8080 not working
 const bodyParser = require("body-parser"); // middleware
-const cookieParser = require("cookie-parser"); // cookie middleware
+//const cookieParser = require("cookie-parser"); // cookie middleware
+const cookieSession = require('cookie-session');
 const morgan = require("morgan");
 const bcrypt = require('bcryptjs');
 
@@ -86,7 +87,14 @@ app.use(
   })
 );
 
-app.use(cookieParser());
+//app.use(cookieParser());
+app.use(cookieSession({
+  name: "session",
+  keys: ["hodl", "leverage"]
+}));
+
+
+
 
 app.use(morgan("dev"));
 
