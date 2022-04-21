@@ -4,6 +4,7 @@ const PORT = 8081; // default port 8080 not working
 const bodyParser = require("body-parser"); // middleware
 const cookieParser = require("cookie-parser"); // cookie middleware
 const morgan = require("morgan");
+const bcrypt = require('bcryptjs');
 
 // returns a random 6 character string
 const characters =
@@ -266,3 +267,5 @@ app.post("/logout", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Tinyapp listening on port ${PORT}!`);
 });
+
+
