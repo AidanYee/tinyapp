@@ -5,77 +5,70 @@ const bodyParser = require("body-parser"); // middleware
 const cookieSession = require('cookie-session');// cookie session middleware
 const morgan = require("morgan");
 const bcrypt = require('bcryptjs');
+const { urlDatabase, users, generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
 
-// returns a random 6 character string
-const characters =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-const generateRandomString = function(length) {
-  let result = " ";
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
+// // returns a random 6 character string
+// const characters =
+//   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  return result;
-};
+// const generateRandomString = function(length) {
+//   let result = " ";
+//   const charactersLength = characters.length;
+//   for (let i = 0; i < length; i++) {
+//     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+//   }
+
+//   return result;
+// };
 
 //new database
-const urlDatabase = {
-  "b2xVn2":{
-    longURL: "http://www.lighthouselabs.ca",
-    userID: "3f5666"
-  },
-  "9sm5xK":{
-    longURL: "http://www.google.com",
-    userID:"3f5666"
-  }
-};
+// const urlDatabase = {
+//   "b2xVn2":{
+//     longURL: "http://www.lighthouselabs.ca",
+//     userID: "3f5666"
+//   },
+//   "9sm5xK":{
+//     longURL: "http://www.google.com",
+//     userID:"3f5666"
+//   }
+// };
 
 
-const users = {
-  userRandomID: {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: bcrypt.hashSync('123'),
-  },
-  user2RandomID: {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: bcrypt.hashSync('321'),
-  },
-};
+// const users = {
+//   userRandomID: {
+//     id: "userRandomID",
+//     email: "user@example.com",
+//     password: bcrypt.hashSync('123'),
+//   },
+//   user2RandomID: {
+//     id: "user2RandomID",
+//     email: "user2@example.com",
+//     password: bcrypt.hashSync('321'),
+//   },
+// };
 
 //helper function to check if email is in database
-const emailCheck = function(submittedEmail) {
-  for (const user in users) {
-    if (users[user].email === submittedEmail) {
-      return true;
-    }
-  }
-  return false;
-};
+// const getUserByEmail = function(submittedEmail) {
+//   for (const user in users) {
+//     if (users[user].email === submittedEmail) {
+//       return users[user];
+//     }
+//   }
+//   return undefined;
+// };
 
-const getUserByEmail = function(submittedEmail) {
-  for (const user in users) {
-    if (users[user].email === submittedEmail) {
-      return users[user];
-    }
-  }
-  return undefined;
-};
+// //url owner function
+// const urlsForUser = function(id, urlDatabase) {
+//   const filteredDatabase = {};
 
-//url owner function
-const urlsForUser = function(id, urlDatabase) {
-  const filteredDatabase = {};
-
-  for (let shortURL in urlDatabase) {
-    const url = urlDatabase[shortURL];
-    if (url.userID === id)
-      filteredDatabase[shortURL] = url;
-  }
-  return filteredDatabase;
-};
+//   for (let shortURL in urlDatabase) {
+//     const url = urlDatabase[shortURL];
+//     if (url.userID === id)
+//       filteredDatabase[shortURL] = url;
+//   }
+//   return filteredDatabase;
+// };
 
 app.set("view engine", "ejs");
 
@@ -92,16 +85,12 @@ app.use(cookieSession({
   keys: ["hodl", "leverage"]
 }));
 
-
-
-
 app.use(morgan("dev"));
 
 // routes
 app.get("/urls", (req, res) => {
   if (req.session['user_id']) {
     const userURLs = urlsForUser(req.session['user_id'], urlDatabase);
-    console.log("🚀 ~ file: express_server.js ~ line 105 ~ app.get ~ userURLs", userURLs);
     const templateVars = {
       urls: userURLs,
       user: users[req.session['user_id']]
@@ -119,10 +108,8 @@ app.get("/urls/new", (req, res) => {
     res.redirect('/login');
   } else {
     const userID = req.session["user_id"];
-    console.log(" userID", userID);
     const userURLs = urlsForUser(userID, urlDatabase);
-    const user = users[userID];
-    console.log("user",user);
+    //const user = users[userID];
     const templateVars = {
       user: users[req.session['user_id']],
       urls: userURLs
@@ -194,7 +181,7 @@ app.post("/register", (req, res) => {
       .send(
         "Can not submit an empty email or password field. Please enter a valid email & password and try again."
       );
-  } else if (emailCheck(req.body["email"])) {
+  } else if (getUserByEmail(req.body["email"])) {
     res
       .status(400)
       .send(
