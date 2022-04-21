@@ -3,72 +3,9 @@ const app = express();
 const PORT = 8081; // default port 8080 not working
 const bodyParser = require("body-parser"); // middleware
 const cookieSession = require('cookie-session');// cookie session middleware
-const morgan = require("morgan");
+const morgan = require("morgan"); // middleware
 const bcrypt = require('bcryptjs');
 const { urlDatabase, users, generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
-
-
-// // returns a random 6 character string
-// const characters =
-//   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-// const generateRandomString = function(length) {
-//   let result = " ";
-//   const charactersLength = characters.length;
-//   for (let i = 0; i < length; i++) {
-//     result += characters.charAt(Math.floor(Math.random() * charactersLength));
-//   }
-
-//   return result;
-// };
-
-//new database
-// const urlDatabase = {
-//   "b2xVn2":{
-//     longURL: "http://www.lighthouselabs.ca",
-//     userID: "3f5666"
-//   },
-//   "9sm5xK":{
-//     longURL: "http://www.google.com",
-//     userID:"3f5666"
-//   }
-// };
-
-
-// const users = {
-//   userRandomID: {
-//     id: "userRandomID",
-//     email: "user@example.com",
-//     password: bcrypt.hashSync('123'),
-//   },
-//   user2RandomID: {
-//     id: "user2RandomID",
-//     email: "user2@example.com",
-//     password: bcrypt.hashSync('321'),
-//   },
-// };
-
-//helper function to check if email is in database
-// const getUserByEmail = function(submittedEmail) {
-//   for (const user in users) {
-//     if (users[user].email === submittedEmail) {
-//       return users[user];
-//     }
-//   }
-//   return undefined;
-// };
-
-// //url owner function
-// const urlsForUser = function(id, urlDatabase) {
-//   const filteredDatabase = {};
-
-//   for (let shortURL in urlDatabase) {
-//     const url = urlDatabase[shortURL];
-//     if (url.userID === id)
-//       filteredDatabase[shortURL] = url;
-//   }
-//   return filteredDatabase;
-// };
 
 app.set("view engine", "ejs");
 
@@ -79,7 +16,6 @@ app.use(
   })
 );
 
-//app.use(cookieParser());
 app.use(cookieSession({
   name: "session",
   keys: ["hodl", "leverage"]
@@ -138,7 +74,6 @@ app.get("/urls/:shortURL", (req, res) => {
     user: users[userID]};
   res.render("urls_show", templateVars);
 });
-
 
 // registration page
 app.get("/register", (req, res) => {
@@ -209,8 +144,6 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls/" + rngString);
 });
 
-
-
 // removes a URL resource
 app.post("/urls/:shortURL/delete", (req, res) => {
   if (!req.session['user_id']) {
@@ -248,5 +181,3 @@ app.post("/logout", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Tinyapp listening on port ${PORT}!`);
 });
-
-
