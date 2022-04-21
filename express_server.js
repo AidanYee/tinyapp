@@ -101,7 +101,7 @@ app.use(morgan("dev"));
 app.get("/urls", (req, res) => {
   if (req.session['user_id']) {
     const userURLs = urlsForUser(req.session['user_id'], urlDatabase);
-    console.log("userURLs:",userURLs);
+    console.log("🚀 ~ file: express_server.js ~ line 105 ~ app.get ~ userURLs", userURLs);
     const templateVars = {
       urls: userURLs,
       user: users[req.session['user_id']]
@@ -113,7 +113,7 @@ app.get("/urls", (req, res) => {
   
 });
 
-// creates TinyURL submission box page
+// shows full + shortened URLs
 app.get("/urls/new", (req, res) => {
   if (!req.session["user_id"]) {
     res.redirect('/login');
@@ -131,23 +131,6 @@ app.get("/urls/new", (req, res) => {
     res.render("urls_new", templateVars);
   }
 });
-
-// shows the shortened url & it's non-shortened variant
-app.get("/urls", (req, res) => {
-  if (req.session['user_id']) {
-    const userURLs = urlsForUser(req.session['user_id']);
-    const templateVars = {
-      urls: userURLs,
-      user: users[req.session['user_id']]
-    };
-    res.render('urls_index', templateVars);
-  } else {
-    res.redirect('/login');
-  }
-  
-});
-
-
 
 // short url that redirects to it's non-shortened variant
 app.get("/u/:shortURL", (req, res) => {
@@ -224,7 +207,6 @@ app.post("/register", (req, res) => {
       email: req.body["email"],
       password: bcrypt.hashSync(req.body["password"]),
     };
-    // console.log("🚀 ~ file: express_server.js ~ line 207 ~ app.post ~ users", users);
     res.cookie("user_id", rngUserID);
     res.redirect("/urls");
   }
