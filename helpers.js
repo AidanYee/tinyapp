@@ -42,10 +42,10 @@ const generateRandomString = function(length) {
 };
 
 //check if email is in database
-const getUserByEmail = function(submittedEmail) {
-  for (const user in users) {
-    if (users[user].email === submittedEmail) {
-      return users[user];
+const getUserByEmail = function(email, users) {
+  for (const userID in users) {
+    if (users[userID].email === email) {
+      return users[userID];
     }
   }
   return undefined;

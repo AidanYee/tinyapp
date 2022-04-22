@@ -93,7 +93,7 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  const user = getUserByEmail(email);
+  const user = getUserByEmail(email, users);
   if (!user) {
     res.status(403).send("User does not exist");
   } else {
@@ -114,7 +114,7 @@ app.post("/register", (req, res) => {
       .send(
         "Can not submit an empty email or password field. Please enter a valid email & password and try again."
       );
-  } else if (getUserByEmail(req.body["email"])) {
+  } else if (getUserByEmail(req.body["email"], users)) {
     res
       .status(400)
       .send(
