@@ -23,16 +23,25 @@ app.use(cookieSession({
 app.use(morgan("dev"));
 
 // routes
+app.get("/", (req, res) => {
+  if (!req.session) {
+    res.redirect("/login");
+  } else {
+    res.redirect("/urls");
+  }
+});
+
+// main url page
 app.get("/urls", (req, res) => {
-  if (req.session['user_id']) {
+  if (!req.session['user_id']) {
+    res.redirect('/login');
+  } else {
     const userURLs = urlsForUser(req.session['user_id'], urlDatabase);
     const templateVars = {
       urls: userURLs,
       user: users[req.session['user_id']]
     };
     res.render('urls_index', templateVars);
-  } else {
-    res.redirect('/login');
   }
   
 });
@@ -132,14 +141,20 @@ app.post("/register", (req, res) => {
   }
 });
 
-// creates a new shortened string for url & redirects to /urls/
+// creates a new shortened string for url & redirects to /urls/id
 app.post("/urls", (req, res) => {
-  let rngString = generateRandomString(6);
-  urlDatabase[rngString] = {
-    longURL: req.body.longURL,
-    userID: req.session['user_id']
-  };
-  res.redirect("/urls/" + rngString);
+  if (!req.session['user_id']) {
+    res
+      .status(403)
+      .send("Please login in.");
+  } else {
+    let rngString = generateRandomString(6);
+    urlDatabase[rngString] = {
+      longURL: req.body.longURL,
+      userID: req.session['user_id']
+    };
+    res.redirect("/urls/" + rngString);
+  }
 });
 
 // removes a URL resource
