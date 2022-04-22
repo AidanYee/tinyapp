@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 8081; // default port 8080 not working
+const PORT = 8081;
 const bodyParser = require("body-parser"); // middleware
 const cookieSession = require('cookie-session');// cookie session middleware
 const morgan = require("morgan"); // middleware
